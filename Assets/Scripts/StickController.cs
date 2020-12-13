@@ -9,12 +9,19 @@ public class StickController : MonoBehaviour
         Configuration, ShootAnimation, Shoot, Shooted
     }
 
+    public Transform StickModel;
     public StickModes mode;
     public Transform target;
     public float speed = 10;
     public float maxTranslation = 10f;
     private float totalTranslation = 0f;
     private float shootSpeed = 0f;
+
+    private void Start()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
 
     void Update()
     {
@@ -29,15 +36,18 @@ public class StickController : MonoBehaviour
             case StickModes.Shoot:
                 Shoot();
                 break;
+            case StickModes.Shooted:
+                Wait();
+                break;
         }
     }
 
     private void UpdateMovement()
     {
-        float rotation = Input.GetAxis("Horizontal") * speed * Time.deltaTime;
-        float translation = Input.GetAxis("Vertical") * Time.deltaTime;
+        float rotation = Input.GetAxis("Mouse X") * speed * Time.deltaTime * 10;
+        float translation = Input.GetAxis("Mouse Y") * Time.deltaTime * 10;
 
-        transform.RotateAround(target.position, target.forward, rotation);
+        StickModel.RotateAround(target.position, target.forward, rotation);
 
         var nextTranslation = translation;
         if (totalTranslation + translation >= 0)
@@ -46,9 +56,9 @@ public class StickController : MonoBehaviour
             nextTranslation = maxTranslation - totalTranslation;
 
         totalTranslation += nextTranslation;
-        transform.Translate(0, 0, nextTranslation);
+        StickModel.Translate(0, 0, nextTranslation);
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
         {
             shootSpeed = totalTranslation * (-1) * 10;
             mode = StickModes.ShootAnimation;
@@ -63,7 +73,7 @@ public class StickController : MonoBehaviour
             nextTranslation = totalTranslation * (-1);
 
         totalTranslation += nextTranslation;
-        transform.Translate(0, 0, nextTranslation);
+        StickModel.Translate(0, 0, nextTranslation);
 
         if (totalTranslation == 0f)
             mode = StickModes.Shoot;
@@ -71,10 +81,31 @@ public class StickController : MonoBehaviour
 
     private void Shoot()
     {
-        var relativePosition = new Vector3(transform.position.x, target.transform.position.y, transform.position.z);
+        var relativePosition = new Vector3(StickModel.position.x, target.transform.position.y, StickModel.position.z);
         var shootForce = (target.transform.position - relativePosition).normalized * (shootSpeed) * 50 * target.GetComponent<Rigidbody>().mass;
+        StickModel.gameObject.SetActive(false);
         target.GetComponent<Rigidbody>().AddForce(shootForce);
         mode = StickModes.Shooted;
+    }
+
+    private void Wait()
+    {
+        //Debug.Log(target.GetComponent<Rigidbody>().velocity.magnitude);
+        if(target.GetComponent<Rigidbody>().velocity.magnitude <= 0.001f)
+        {
+            Invoke("ShowStick", 1.0f);            
+        }
+        else
+        {
+            CancelInvoke("ShowStick");
+        }
+    }
+
+    private void ShowStick()
+    {
+        transform.position = target.transform.position;
+        StickModel.gameObject.SetActive(true);
+        mode = StickModes.Configuration;
     }
 
 }
