@@ -93,15 +93,15 @@ public class StickController : MonoBehaviour
         //Debug.Log(target.GetComponent<Rigidbody>().velocity.magnitude);
         if(target.GetComponent<Rigidbody>().velocity.magnitude <= 0.001f)
         {
-            Invoke("ShowStick", 1.0f);            
+            //Invoke("ShowStick", 1.0f);            
         }
         else
         {
-            CancelInvoke("ShowStick");
+            //CancelInvoke("ShowStick");
         }
     }
 
-    private void ShowStick()
+    public void ShowStick()
     {
         transform.position = target.transform.position;
         StickModel.gameObject.SetActive(true);
