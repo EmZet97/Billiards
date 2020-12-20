@@ -16,8 +16,12 @@ public class GameManager : MonoBehaviour
 
     private static List<Ball> gameBalls = new List<Ball>();
 
-    private int playerTurn;
+    private int playerTurn = -1;
+    private Ball.BallType playerTurnBallType = Ball.BallType.None;
+
     private Ball.BallType playerOneBallType = Ball.BallType.None;
+    private List<List<Ball.BallType>> turnScoredBalls = new List<List<Ball.BallType>>();
+    private int turn = 0;
 
     private int solidTeamPoints = 0;
     private int stripeTeamPoints = 0;
@@ -62,14 +66,25 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    //End of turn
     private void ChengeTurn()
     {
+        //if(turnScoredBalls[turnScoredBalls.Count - 1].Find(x => x.Equals()))
+
         playerTurn = (playerTurn + 1) % 2;
+        //playerTurnBallType = 
+
+        //Update UI
         gameCommunicatesText.text = "Turn of player " + (playerTurn + 1);
         playerOneSign.text = playerTurn == 0 ? "X" : "";
         playerTwoSign.text = playerTurn == 1 ? "X" : "";
+
+
         stick.ShowStick();
         changeTeamInvoked = false;
+
+        // Add new turn ball container
+        turnScoredBalls.Add(new List<Ball.BallType>());
     }
 
     private void UpdateScore()
@@ -83,6 +98,9 @@ public class GameManager : MonoBehaviour
 
     public void ScoreBall(Ball ball)
     {
+        //Add scored ball to turn container
+        turnScoredBalls[turnScoredBalls.Count - 1].Add(ball.Type);
+
         switch (ball.Type)
         {
             case Ball.BallType.Black:
