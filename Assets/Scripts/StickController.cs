@@ -44,8 +44,8 @@ public class StickController : MonoBehaviour
 
     private void UpdateMovement()
     {
-        float rotation = Input.GetAxis("Mouse X") * speed * Time.deltaTime * 10;
-        float translation = Input.GetAxis("Mouse Y") * Time.deltaTime * 10;
+        float rotation = (Input.GetAxis("Mouse X") + Input.GetAxis("Horizontal")) * speed * Time.deltaTime * 10;
+        float translation = (Input.GetAxis("Mouse Y") + Input.GetAxis("Vertical")) * Time.deltaTime * 10;
 
         StickModel.RotateAround(target.position, target.forward, rotation);
 
@@ -90,15 +90,7 @@ public class StickController : MonoBehaviour
 
     private void Wait()
     {
-        //Debug.Log(target.GetComponent<Rigidbody>().velocity.magnitude);
-        if(target.GetComponent<Rigidbody>().velocity.magnitude <= 0.001f)
-        {
-            //Invoke("ShowStick", 1.0f);            
-        }
-        else
-        {
-            //CancelInvoke("ShowStick");
-        }
+        
     }
 
     public void ShowStick()
@@ -107,5 +99,4 @@ public class StickController : MonoBehaviour
         StickModel.gameObject.SetActive(true);
         mode = StickModes.Configuration;
     }
-
 }

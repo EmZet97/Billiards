@@ -851,7 +851,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 
+  m_Text: Info
 --- !u!222 &504733433
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2351,7 +2351,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 
+  m_Text: Player 1
 --- !u!222 &1218182333
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3254,7 +3254,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 
+  m_Text: Player 2
 --- !u!222 &1633565784
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3952,6 +3952,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: BilliardsTable
       objectReference: {fileID: 0}
+    - target: {fileID: 8508626956082245649, guid: 75be9a4ddc35ad94ab495ceb085ad242, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8508626956082736177, guid: 75be9a4ddc35ad94ab495ceb085ad242, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -3994,6 +3998,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8508626956082736177, guid: 75be9a4ddc35ad94ab495ceb085ad242, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8949415682369500551, guid: 75be9a4ddc35ad94ab495ceb085ad242, type: 3}
+      propertyPath: m_Convex
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8949415682369500551, guid: 75be9a4ddc35ad94ab495ceb085ad242, type: 3}
+      propertyPath: m_IsTrigger
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

@@ -16,11 +16,17 @@ public class GameManager : MonoBehaviour
 
     private static List<Ball> gameBalls = new List<Ball>();
 
-    private int playerTurn = -1;
-    private Ball.BallType playerTurnBallType = Ball.BallType.None;
+    private Ball.BallType[] playersBalls = new Ball.BallType[] { Ball.BallType.None, Ball.BallType.None };
 
-    private Ball.BallType playerOneBallType = Ball.BallType.None;
-    private List<List<Ball.BallType>> turnScoredBalls = new List<List<Ball.BallType>>();
+    private int playerTurn = -1;
+    public Ball.BallType TurnBallType { get
+        {
+            return playersBalls[playerTurn];
+        } 
+    }
+
+    private List<List<Ball.BallType>> scoredBallsPerTurn = new List<List<Ball.BallType>>();
+
     private int turn = 0;
 
     private int solidTeamPoints = 0;
@@ -69,37 +75,47 @@ public class GameManager : MonoBehaviour
     //End of turn
     private void ChengeTurn()
     {
-        //if(turnScoredBalls[turnScoredBalls.Count - 1].Find(x => x.Equals()))
-
-        playerTurn = (playerTurn + 1) % 2;
-        //playerTurnBallType = 
-
-        //Update UI
-        gameCommunicatesText.text = "Turn of player " + (playerTurn + 1);
-        playerOneSign.text = playerTurn == 0 ? "X" : "";
-        playerTwoSign.text = playerTurn == 1 ? "X" : "";
-
+        //If player having turn didn't score - change player
+        if(scoredBallsPerTurn.Count == 0 || scoredBallsPerTurn[scoredBallsPerTurn.Count - 1].FindAll(x => x.Equals(TurnBallType)).Count == 0)
+        {
+            playerTurn = (playerTurn + 1) % 2;
+            //Update UI
+            gameCommunicatesText.text = "Turn of player " + (playerTurn + 1);
+            playerOneSign.text = playerTurn == 0 ? "X" : "";
+            playerTwoSign.text = playerTurn == 1 ? "X" : "";
+        }
+        else
+        {
+            gameCommunicatesText.text = "Player " + (playerTurn + 1) + " continue turn";
+        }        
 
         stick.ShowStick();
         changeTeamInvoked = false;
 
         // Add new turn ball container
-        turnScoredBalls.Add(new List<Ball.BallType>());
+        scoredBallsPerTurn.Add(new List<Ball.BallType>());
+        turn++;
     }
 
     private void UpdateScore()
     {
-        if (playerOneBallType == Ball.BallType.None)
+        if (playersBalls[0] == Ball.BallType.None)
             return;
 
-        playerOneScoreText.text = playerOneBallType == Ball.BallType.Solid ? $"Solid team: {solidTeamPoints} points" : $"Stripe team: {stripeTeamPoints} points";
-        playerTwoScoreText.text = playerOneBallType == Ball.BallType.Stripe ? $"Solid team: {solidTeamPoints} points" : $"Stripe team: {stripeTeamPoints} points";
+        playerOneScoreText.text = playersBalls[0] == Ball.BallType.Solid ? $"Solid team: {solidTeamPoints} points" : $"Stripe team: {stripeTeamPoints} points";
+        playerTwoScoreText.text = playersBalls[0] == Ball.BallType.Stripe ? $"Solid team: {solidTeamPoints} points" : $"Stripe team: {stripeTeamPoints} points";
+    }
+
+    private void AssignBallToPlayer(Ball.BallType ballType)
+    {
+        playersBalls[playerTurn] = ballType;
+        playersBalls[(playerTurn + 1)%2] = ballType == Ball.BallType.Solid ? Ball.BallType.Stripe : Ball.BallType.Solid;
     }
 
     public void ScoreBall(Ball ball)
     {
         //Add scored ball to turn container
-        turnScoredBalls[turnScoredBalls.Count - 1].Add(ball.Type);
+        scoredBallsPerTurn[scoredBallsPerTurn.Count - 1].Add(ball.Type);
 
         switch (ball.Type)
         {
@@ -112,9 +128,9 @@ public class GameManager : MonoBehaviour
                 return;
             case Ball.BallType.Stripe:
                 //First score
-                if(playerOneBallType == Ball.BallType.None)
+                if(playersBalls[0] == Ball.BallType.None)
                 {
-                    playerOneBallType = playerTurn == 0 ? Ball.BallType.Stripe : Ball.BallType.Solid;
+                    AssignBallToPlayer(ball.Type);
                     gameCommunicatesText.text = "Current player will play stripe balls";
                 }
                 else
@@ -125,9 +141,9 @@ public class GameManager : MonoBehaviour
                 break;
             case Ball.BallType.Solid:
                 //First score
-                if (playerOneBallType == Ball.BallType.None)
+                if (playersBalls[0] == Ball.BallType.None)
                 {
-                    playerOneBallType = playerTurn == 0 ? Ball.BallType.Solid : Ball.BallType.Stripe; 
+                    AssignBallToPlayer(ball.Type);
                     gameCommunicatesText.text = "Solid player will play stripe balls";
                 }
                 else
@@ -137,6 +153,7 @@ public class GameManager : MonoBehaviour
                 solidTeamPoints += 1;
                 break;
         }
+
 
         UpdateScore();
         gameBalls.Remove(ball);
