@@ -9,8 +9,8 @@ public class BallRotator : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        child = Instantiate(BallInstance, transform.position, transform.rotation, transform).transform;
-        child.localScale = new Vector3(1, 1, 1);
+        // child = Instantiate(BallInstance, transform.position, transform.rotation, transform).transform;
+        // child.localScale = new Vector3(1, 1, 1);
     }
 
     // Update is called once per frame
