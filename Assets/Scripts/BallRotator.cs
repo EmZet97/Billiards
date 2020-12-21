@@ -6,11 +6,11 @@ public class BallRotator : MonoBehaviour
 {
     public GameObject BallInstance;
     private Transform child;
+    
     // Start is called before the first frame update
     void Start()
     {
-        // child = Instantiate(BallInstance, transform.position, transform.rotation, transform).transform;
-        // child.localScale = new Vector3(1, 1, 1);
+        child = gameObject.transform.GetChild(0);
     }
 
     // Update is called once per frame

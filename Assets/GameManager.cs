@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,9 +11,11 @@ public class GameManager : MonoBehaviour
     public Text playerOneSign;
     public Text playerTwoScoreText;
     public Text playerTwoSign;
-    public Text gameCommunicatesText;
-
+    public Text gameCommunicatesText;  
     public StickController stick;
+    public bool gameInProgress = false;
+
+    public menu menu;
 
     private static List<Ball> gameBalls = new List<Ball>();
 
@@ -42,7 +45,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        gameBalls = gameBalls.Where(x => x != null).ToList();
     }
 
     // Update is called once per frame
@@ -58,7 +61,7 @@ public class GameManager : MonoBehaviour
                     if (changeTeamInvoked)
                     {
                         changeTeamInvoked = false;
-                        CancelInvoke("ChengeTurn");
+                        CancelInvoke("ChangeTurn");
                     }
                     return;                    
                 }
@@ -66,14 +69,14 @@ public class GameManager : MonoBehaviour
             if (!changeTeamInvoked)
             {
                 changeTeamInvoked = true;
-                Invoke("ChengeTurn", 1.0f);
+                Invoke("ChangeTurn", 1.0f);
             }
             
         }
     }
 
     //End of turn
-    private void ChengeTurn()
+    private void ChangeTurn()
     {
         //If player having turn didn't score - change player
         if(scoredBallsPerTurn.Count == 0 || scoredBallsPerTurn[scoredBallsPerTurn.Count - 1].FindAll(x => x.Equals(TurnBallType)).Count == 0)
@@ -120,7 +123,26 @@ public class GameManager : MonoBehaviour
         switch (ball.Type)
         {
             case Ball.BallType.Black:
-                //end game
+                if (playersBalls[playerTurn] == Ball.BallType.Solid)
+                {
+                    if (solidTeamPoints == 7)
+                    {
+                        gameInProgress = false;
+                        menu.EndGame($"Player {playerTurn + 1}");
+                    }
+                    gameInProgress = false;
+                    menu.EndGame($"Player {(playerTurn + 1) % 2 + 1}");
+                }
+                else if (playersBalls[playerTurn] == Ball.BallType.Stripe)
+                {
+                    if (stripeTeamPoints == 7)
+                    {
+                        gameInProgress = false;
+                        menu.EndGame($"Player {playerTurn + 1}");
+                    }
+                    gameInProgress = false;
+                    menu.EndGame($"Player {(playerTurn + 1) % 2 + 1}");
+                }
                 break;
             case Ball.BallType.White:
                 ball.gameObject.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
