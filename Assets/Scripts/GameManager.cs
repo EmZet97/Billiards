@@ -79,7 +79,7 @@ public class GameManager : MonoBehaviour
     private void ChangeTurn()
     {
         //If player having turn didn't score - change player
-        if(scoredBallsPerTurn.Count == 0 || scoredBallsPerTurn[scoredBallsPerTurn.Count - 1].FindAll(x => x.Equals(TurnBallType)).Count == 0)
+        if(scoredBallsPerTurn.Count == 0 || scoredBallsPerTurn[scoredBallsPerTurn.Count - 1].FindAll(x => x.Equals(TurnBallType)).Count == 0 || scoredBallsPerTurn[scoredBallsPerTurn.Count - 1].FindAll(x => x.Equals(Ball.BallType.White)).Count != 0)
         {
             playerTurn = (playerTurn + 1) % 2;
             //Update UI
